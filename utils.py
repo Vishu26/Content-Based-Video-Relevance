@@ -1,6 +1,7 @@
 import csv
 import os
 from collections import OrderedDict
+import numpy as np
 
 def split_index(path):
 
@@ -31,7 +32,17 @@ def load_relevance(path):
     with open(path, 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter='\n')
         for row in reader:
-            li = row[0].split(',')
-            rel[li[0]] = li[1:]
+            li = row[0].strip().split(',')
+            rel[li[0]] = [x for x in li[1:] if x!='']
     
-    return rel 
+    return rel
+
+def load_inception(path, idx):
+    
+    pool = OrderedDict()
+    for i in idx:
+        pool_path = os.path.join(path, i+'/'+i+'-inception-pool3.npy')
+        feature = np.load(pool_path)
+        pool[i] = feature
+    
+    return pool
